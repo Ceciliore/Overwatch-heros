@@ -12,16 +12,22 @@ class ConectaPostgres:
         self.dsn = f"postgres://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
         self.connection = self.create_connection()
 
-    def do_select_database(self, query, *args):
-        cursor = self.connection.cursor()
-        cursor.execute(query, *args)
+    def do_select_on_database(self, query, *args):
+        try:
+            cursor = self.connection.cursor()
+            cursor.execute(query, *args)
+            
+            result_query = cursor.fetchall()
+            return result_query
 
+        except (Exception, psycopg2.Error) as error:
+            print("Error while fetching data from PostgreSQL", error)
 
-    def do_delete_database(self, query, *args):
+    def do_delete_on_database(self, query, *args):
         self.connection.fetchall_cursor(query, args)
         return
 
-    def do_insert_database(self, query, *args):
+    def do_insert_on_database(self, query, *args):
         try:
             cursor = self.connection.cursor()
             cursor.execute(query, *args)
